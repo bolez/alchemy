@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "alchemy"
+version = "0.1.0"
+description = "llm based data contract"
+authors = ["gauravbole <gaurav.r.bole@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<4.0"
+
+
+[tool.poetry.group.llm.dependencies]
+langgraph = "^0.4.8"
+grpcio = "1.56.0"
+langchain-google-genai = "^2.1.5"
+
+
+[tool.poetry.group.web.dependencies]
+fastapi = {extras = ["standard"], version = "^0.115.12"}
+asyncpg = "^0.30.0"
+psycopg2 = "^2.9.10"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
