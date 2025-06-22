@@ -74,10 +74,10 @@ class BaseAgent(ABC):
 
     def __call__(self, state: Dict[str, Any]) -> Dict[str, Any]:
         try:
-            self.run(state)
+            return self.run(state)
         except Exception as e:
             state["messages"] = [
-                AIMessage(content=f"{self.agent_name} failed: {str(e)}\n{tb}")
+                AIMessage(content=f"{self.agent_name} failed: {str(e)}")
             ]
             state["errors"] = state.get("errors", [])
             return state
