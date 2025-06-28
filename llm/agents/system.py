@@ -33,4 +33,3 @@ class SystemAgent(BaseAgent):
         result = self.call_llm(prompt)
         state["messages"] = current_messages + [result]
         return state
-
