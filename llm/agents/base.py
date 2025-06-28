@@ -35,14 +35,17 @@ class BaseAgent(ABC):
             autoescape=True,
         )
 
-    def call_llm(self, prompt: str):
+    def call_llm(self, prompt: str, use_tools: bool = False) -> AIMessage:
+        model = self.llm
+        if use_tools and self.tools:
+            model = model.bind_tools(list(self.tools))
         try:
             if self.structured_output_model:
-                structured_llm = self.llm.with_structured_output(
+                structured_llm = model.with_structured_output(
                     self.structured_output_model
                 )
                 return structured_llm.invoke(prompt)
-            return self.llm.invoke(prompt)
+            return model.invoke(prompt)
 
         except Exception as e:
             raise RuntimeError(f"LLM error in agent `{self.agent_name}`: {str(e)}")
