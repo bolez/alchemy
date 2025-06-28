@@ -9,6 +9,7 @@ from langchain_core.messages import SystemMessage, AIMessage, BaseMessage
 from llm.tools.tool_registry import AGENT_TOOL_REGISTRY
 
 
+
 class SystemAgent(BaseAgent):
 
     def __init__(self, model: str):
@@ -16,6 +17,7 @@ class SystemAgent(BaseAgent):
                          agent_name="system",
                          prompt_file="request_processing.j2",
                          tools=AGENT_TOOL_REGISTRY.get("system", [])
+
                          )
 
     def run(self, state: dict) -> dict:
