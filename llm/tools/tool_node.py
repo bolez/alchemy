@@ -21,11 +21,10 @@ class ToolNode:
         for tool_call in getattr(last_msg, "tool_calls", []):
             tool_name = tool_call["name"]
             args = tool_call["args"]
-
             if tool_name not in self.tools:
                 raise ValueError(f"Tool '{tool_name}' not found.")
 
-            result = self.tools[tool_name](**args)
+            result = self.tools[tool_name](args)
 
             outputs.append(
                 ToolMessage(
