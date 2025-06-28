@@ -1,20 +1,21 @@
 
 
-from agents.base import Agent
+# from base import Agent
 from pydantic import BaseModel
-from agents.base import BaseAgent
+from llm.agents.base import BaseAgent
 # from prompts import SystemPrompt
 
-from tools.tool_registry import AGENT_TOOL_REGISTRY
+from llm.tools.tool_registry import AGENT_TOOL_REGISTRY
+
 
 class SystemAgent(BaseAgent):
-    
+
     def __init__(self, model: str):
         super().__init__(model=model,
                          agent_name="system",
                          prompt_file="request_processing.j2",
                          tools=AGENT_TOOL_REGISTRY.get("system", {})
-        )
+                         )
 
     def run(self, state: dict) -> dict:
         state["current_agent"] = self.agent_name

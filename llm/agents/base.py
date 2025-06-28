@@ -2,12 +2,12 @@
 import os
 from abc import ABC, abstractmethod
 from typing import Optional, Type, Dict, Callable, Any
-from config.llm import LLMModel
+from llm.config.llm import LLMModel
 from pydantic import BaseModel
 from jinja2 import Environment, FileSystemLoader, Template
 from langchain_core.messages import AIMessage
 
-from config.loader import load_config
+from llm.config.loader import load_config
 
 config = load_config()
 llm_config = config["llm"]
@@ -23,14 +23,15 @@ class BaseAgent(ABC):
         structured_output_model: Optional[Type[BaseModel]] = None,
         tools: Optional[Dict[str, Callable]] = None,
     ):
-        self.llm = LLMModel(**llm_config)
+        llm_builder = model if isinstance(model, LLMModel) else LLMModel(**llm_config)
+        self.llm = llm_builder()
         self.agent_name = agent_name
         self.prompt_file = prompt_file
         self.prompt_text = prompt_text
         self.tools = tools or {}
         self.structured_output_model = structured_output_model
         self.jinja_env = Environment(
-            loader=FileSystemLoader(searchpath=os.path.join(os.getcwd(), "prompts")),
+            loader=FileSystemLoader(searchpath=os.path.join(os.getcwd(), "llm/prompts")),
             autoescape=True,
         )
 
