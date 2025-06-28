@@ -2,20 +2,12 @@
 import os
 from abc import ABC, abstractmethod
 from typing import Optional, Type, Dict, Callable, Any
-<<<<<<< HEAD
 from llm.config.llm import LLMModel
-=======
-from config.llm import LLMModel
->>>>>>> cda17236d56e216f3d9a1106824aba1a3291ac6c
 from pydantic import BaseModel
 from jinja2 import Environment, FileSystemLoader, Template
 from langchain_core.messages import AIMessage
 
-<<<<<<< HEAD
 from llm.config.loader import load_config
-=======
-from config.loader import load_config
->>>>>>> cda17236d56e216f3d9a1106824aba1a3291ac6c
 
 config = load_config()
 llm_config = config["llm"]
