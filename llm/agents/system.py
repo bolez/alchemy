@@ -4,11 +4,14 @@
 from pydantic import BaseModel
 from llm.agents.base import BaseAgent
 # from prompts import SystemPrompt
+
 from langchain_core.messages import SystemMessage, AIMessage, BaseMessage, ToolMessage
 from llm.models.agent_state import AgentState
+
 from llm.tools.tool_registry import AGENT_TOOL_REGISTRY
 import json
 from typing import Dict, Any
+
 
 
 class SystemAgent(BaseAgent):
@@ -20,7 +23,9 @@ class SystemAgent(BaseAgent):
         super().__init__(model=model,
                          agent_name="system",
                          prompt_file="request_processing.j2",
+
                          tools=tools_dict
+
                          )
 
     def process_tool_calls(self, state: AgentState, tool_response: BaseMessage) -> AgentState:
@@ -56,18 +61,22 @@ class SystemAgent(BaseAgent):
             "source_schemas": tool_output_dict
         }
 
+
     def run(self, state: AgentState) -> AgentState:
         print("this is a stete", state)
         tool_names = list(self.tools.keys())
+
 
         prompt = self.build_prompt({
             "available_tools": ", ".join(tool_names)
         })
         current_messages = state.get("messages", [])[0]
         current_messages = state["messages"]
+
         result = self.call_llm([SystemMessage(prompt), *current_messages],
                                use_tools=True)
         d = self.process_tool_calls(state, result)
         print("result", state)
         print("state messages", state["messages"])
         return d
+

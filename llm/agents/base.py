@@ -58,17 +58,21 @@ class BaseAgent(ABC):
             "progress": progress,
         }
 
+
     def call_llm(self, messages: Union[str, List[BaseMessage]], use_tools: bool = False) -> AIMessage:
         model = self.llm
         if use_tools and self.tools:
             model = model.bind_tools(list(self.tools.values()))
+
         try:
             if self.structured_output_model:
                 structured_llm = model.with_structured_output(
                     self.structured_output_model
                 )
+
                 return structured_llm.invoke(messages)
             return model.invoke(messages)
+
 
         except Exception as e:
             raise RuntimeError(f"LLM error in agent `{self.agent_name}`: {str(e)}")
