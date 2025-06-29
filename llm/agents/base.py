@@ -1,16 +1,17 @@
 
 import os
 from abc import ABC, abstractmethod
-from typing import Optional, Type, Dict, Callable, Any
+from typing import Optional, Type, Dict, Callable, Any, Union, List
 from llm.config.llm import LLMModel
 from pydantic import BaseModel
 from jinja2 import Environment, FileSystemLoader, Template
-from langchain_core.messages import AIMessage
-
+from langchain_core.messages import AIMessage, BaseMessage
+from llm.models.agent_state import AgentState
 from llm.config.loader import load_config
 
 config = load_config()
 llm_config = config["llm"]
+AGENT_LIST = config["agents"]
 
 
 class BaseAgent(ABC):
@@ -34,18 +35,44 @@ class BaseAgent(ABC):
             loader=FileSystemLoader(searchpath=os.path.join(os.getcwd(), "llm/prompts")),
             autoescape=True,
         )
+    
+    def prepare_agent_state(self, state: AgentState) -> AgentState:
+        """
+        Prepares and returns a new AgentState with updated tracking info:
+        - Sets current_agent
+        - Initializes agent_status and progress for each agent in the workflow
+        """
+        print("---->", state)
+        agent_status = dict(state.get("agent_status", {}))
+        progress = dict(state.get("progress", {}))
+        print(",,,,,")
+        agents = AGENT_LIST
+        print(agents)
+        for agent in agents:
+            agent_status.setdefault(agent, {"revised": False, "reviewed": False})
+            progress.setdefault(agent, "pending")
 
-    def call_llm(self, prompt: str, use_tools: bool = False) -> AIMessage:
+        return {
+            "current_agent": self.agent_name,
+            "agent_status": agent_status,
+            "progress": progress,
+        }
+
+
+    def call_llm(self, messages: Union[str, List[BaseMessage]], use_tools: bool = False) -> AIMessage:
         model = self.llm
         if use_tools and self.tools:
-            model = model.bind_tools(list(self.tools))
+            model = model.bind_tools(list(self.tools.values()))
+
         try:
             if self.structured_output_model:
                 structured_llm = model.with_structured_output(
                     self.structured_output_model
                 )
-                return structured_llm.invoke(prompt)
-            return model.invoke(prompt)
+
+                return structured_llm.invoke(messages)
+            return model.invoke(messages)
+
 
         except Exception as e:
             raise RuntimeError(f"LLM error in agent `{self.agent_name}`: {str(e)}")
