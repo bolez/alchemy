@@ -36,7 +36,6 @@ class SystemAgent(BaseAgent):
         )
         tool_output_dict = {}
         if last_tool_message:
-            print("^^^^"*100)
 
             try:
                 tool_output = last_tool_message.content

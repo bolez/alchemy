@@ -1,0 +1,16 @@
+Your task is to generate a `UserRequest` object based on the details provided.
+
+Use the following Pydantic model to structure your response:
+
+- `UserRequest`:
+- `schema_file_path`: string path to the YAML file that contains the schema.
+- `initial_user_details`: user-provided metadata (e.g., domain, owner).
+- `source_schemas`: representing the parsed schema file content.
+
+### Inputs:
+
+**Parsed Schema Content** (`source_schemas`):
+
+    {{json.dumps(source_schemas['data'])}}
+    Initial user details:
+    {{initial_message}}

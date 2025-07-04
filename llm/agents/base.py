@@ -1,4 +1,6 @@
 
+from langsmith import trace
+from dotenv import load_dotenv
 import os
 from abc import ABC, abstractmethod
 from typing import Optional, Type, Dict, Callable, Any, Union, List
@@ -8,10 +10,11 @@ from jinja2 import Environment, FileSystemLoader, Template
 from langchain_core.messages import AIMessage, BaseMessage
 from llm.models.agent_state import AgentState
 from llm.config.loader import load_config
-
+import json
 config = load_config()
 llm_config = config["llm"]
 AGENT_LIST = config["agents"]
+load_dotenv()
 
 
 class BaseAgent(ABC):
@@ -24,7 +27,8 @@ class BaseAgent(ABC):
         structured_output_model: Optional[Type[BaseModel]] = None,
         tools: Optional[Dict[str, Callable]] = None,
     ):
-        llm_builder = model if isinstance(model, LLMModel) else LLMModel(**llm_config)
+        llm_builder = model if isinstance(
+            model, LLMModel) else LLMModel(**llm_config)
         self.llm = llm_builder()
         self.agent_name = agent_name
         self.prompt_file = prompt_file
@@ -32,10 +36,12 @@ class BaseAgent(ABC):
         self.tools = tools or {}
         self.structured_output_model = structured_output_model
         self.jinja_env = Environment(
-            loader=FileSystemLoader(searchpath=os.path.join(os.getcwd(), "llm/prompts")),
+            loader=FileSystemLoader(
+                searchpath=os.path.join(os.getcwd(), "llm/prompts")),
             autoescape=True,
         )
-    
+        self.jinja_env.globals["json"] = json
+
     def prepare_agent_state(self, state: AgentState) -> AgentState:
         """
         Prepares and returns a new AgentState with updated tracking info:
@@ -49,7 +55,8 @@ class BaseAgent(ABC):
         agents = AGENT_LIST
         print(agents)
         for agent in agents:
-            agent_status.setdefault(agent, {"revised": False, "reviewed": False})
+            agent_status.setdefault(
+                agent, {"revised": False, "reviewed": False})
             progress.setdefault(agent, "pending")
 
         return {
@@ -57,7 +64,6 @@ class BaseAgent(ABC):
             "agent_status": agent_status,
             "progress": progress,
         }
-
 
     def call_llm(self, messages: Union[str, List[BaseMessage]], use_tools: bool = False) -> AIMessage:
         model = self.llm
@@ -73,9 +79,9 @@ class BaseAgent(ABC):
                 return structured_llm.invoke(messages)
             return model.invoke(messages)
 
-
         except Exception as e:
-            raise RuntimeError(f"LLM error in agent `{self.agent_name}`: {str(e)}")
+            raise RuntimeError(
+                f"LLM error in agent `{self.agent_name}`: {str(e)}")
 
     def build_prompt(self, context: Dict[str, Any]) -> str:
         try:
@@ -86,9 +92,11 @@ class BaseAgent(ABC):
                 template = self.jinja_env.get_template(self.prompt_file)
                 return template.render(**context)
             else:
-                raise ValueError("Neither prompt_text nor prompt_file provided for agent.")
+                raise ValueError(
+                    "Neither prompt_text nor prompt_file provided for agent.")
         except Exception as e:
-            raise RuntimeError(f"[{self.agent_name}] Prompt rendering failed: {str(e)}")
+            raise RuntimeError(
+                f"[{self.agent_name}] Prompt rendering failed: {str(e)}")
 
     @abstractmethod
     def run(self, state: Dict[str, Any]) -> Dict[str, Any]:
@@ -105,15 +113,16 @@ class BaseAgent(ABC):
 
     def __call__(self, state: Dict[str, Any]) -> Dict[str, Any]:
         try:
-            return self.run(state)
+            with trace(
+                    name=f"{self.agent_name}_agent_run",
+                    metadata={
+                        "agent": self.agent_name,
+                        "state_keys": list(state.keys())
+                    }):
+                return self.run(state)
         except Exception as e:
             state["messages"] = [
                 AIMessage(content=f"{self.agent_name} failed: {str(e)}")
             ]
             state["errors"] = state.get("errors", [])
             return state
-
-
-
-
-
