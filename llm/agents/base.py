@@ -14,7 +14,9 @@ import json
 config = load_config()
 llm_config = config["llm"]
 AGENT_LIST = config["agents"]
+
 load_dotenv()
+
 
 
 class BaseAgent(ABC):
@@ -40,6 +42,7 @@ class BaseAgent(ABC):
                 searchpath=os.path.join(os.getcwd(), "llm/prompts")),
             autoescape=True,
         )
+
         self.jinja_env.globals["json"] = json
 
     def prepare_agent_state(self, state: AgentState) -> AgentState:
@@ -64,6 +67,8 @@ class BaseAgent(ABC):
             "agent_status": agent_status,
             "progress": progress,
         }
+
+    
 
     def call_llm(self, messages: Union[str, List[BaseMessage]], use_tools: bool = False) -> AIMessage:
         model = self.llm
