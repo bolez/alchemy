@@ -1,0 +1,29 @@
+version: 2
+models:
+- name: customer_nation
+  description: Contains customer information along with their nation details.
+  columns:
+  - name: c_custkeys
+    data_type: number
+    description: Unique identifier for the customer.
+  - name: c_name
+    data_type: number
+    description: Name of the customer.
+  - name: c_address
+    data_type: varchar
+    description: Address of the customer.
+  - name: c_nationkey
+    data_type: number
+    description: Foreign key referencing the nation of the customer.
+  - name: c_phone
+    data_type: varchar
+    description: Phone number of the customer.
+  - name: c_acctbal
+    data_type: number
+    description: Account balance of the customer.
+  - name: c_comments
+    data_type: varchar
+    description: Additional comments or notes about the customer.
+  - name: n_names
+    data_type: varchar
+    description: Name of the nation.
