@@ -1,5 +1,7 @@
 from typing import Literal, TypedDict
-SUPERVISOR_AGENTS = []
+from llm.config.loader import load_config
+config = load_config()
+SUPERVISOR_AGENTS = config["supervisor"]
 
 
 class Router(TypedDict):

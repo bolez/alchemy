@@ -5,4 +5,7 @@ llm:
   max_retries: 3
 agents:
   - system
-
+  - request_formating
+  - supervisor
+supervisor:
+  - data_engineer

@@ -11,6 +11,7 @@ from langchain_core.messages import AIMessage, BaseMessage
 from llm.models.agent_state import AgentState
 from llm.config.loader import load_config
 import json
+from langgraph.types import Command
 config = load_config()
 llm_config = config["llm"]
 AGENT_LIST = config["agents"]
@@ -117,6 +118,8 @@ class BaseAgent(ABC):
         pass
 
     def __call__(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        agent = self.agent_name
+
         try:
             with trace(
                     name=f"{self.agent_name}_agent_run",
@@ -124,10 +127,26 @@ class BaseAgent(ABC):
                         "agent": self.agent_name,
                         "state_keys": list(state.keys())
                     }):
-                return self.run(state)
+                result = self.run(state)
+                if isinstance(result, Command):
+                    return result
+
+                # Post-processing
+                result["progress"][agent] = "completed"
+                result["agent_status"].setdefault(agent, {})
+                result["agent_status"][agent].setdefault("revised", False)
+                result["agent_status"][agent].setdefault("reviewed", False)
+
+                return result
+
         except Exception as e:
-            state["messages"] = [
-                AIMessage(content=f"{self.agent_name} failed: {str(e)}")
-            ]
-            state["errors"] = state.get("errors", [])
+            # state["messages"] = [
+            #     AIMessage(content=f"{self.agent_name} failed: {str(e)}")
+            # ]
+            # state["errors"] = state.get("errors", [])
+            # return state
+            state["progress"][agent] = "failed"
+            state["messages"] = [AIMessage(content=f"{agent} failed: {str(e)}")]
+            state.setdefault("errors", []).append(str(e))
             return state
+

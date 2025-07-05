@@ -17,10 +17,15 @@ from typing import Dict, Any
 class SystemAgent(BaseAgent):
 
     def __init__(self, model: str):
+        tools_list = AGENT_TOOL_REGISTRY.get("system", [])
+        tools_dict = {tool.name: tool for tool in tools_list}
 
         super().__init__(model=model,
-                         agent_name="supervisor",
-                         prompt_file="supervisor.j2"
+                         agent_name="system",
+                         prompt_file="request_processing.j2",
+
+                         tools=tools_dict
+
                          )
 
     def process_tool_calls(self, state: AgentState, tool_response: BaseMessage) -> AgentState:
@@ -57,7 +62,9 @@ class SystemAgent(BaseAgent):
 
 
     def run(self, state: AgentState) -> AgentState:
+        print("this is a stete", state)
         tool_names = list(self.tools.keys())
+
 
         prompt = self.build_prompt({
             "available_tools": ", ".join(tool_names)
@@ -71,4 +78,3 @@ class SystemAgent(BaseAgent):
         print("result", state)
         print("state messages", state["messages"])
         return d
-
