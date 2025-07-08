@@ -38,3 +38,5 @@ class DataProductSchema(BaseModel):
         ..., description="A list of dictionaries mapping column names to their `ColumnSchema` definitions"
     )
     data_refresh: DataRefresh = Field(..., description="how frequentlly data refresh")
+    data_refresh: Optional[DataRefresh] = Field(..., description="how frequentlly data refresh")
+
