@@ -24,7 +24,7 @@ class Supervisor(BaseAgent):
                          structured_output_model=Router
                          )
 
-    def run(self, state: AgentState) -> Command[Literal["data_engineer", "data_steward_agent", "FINISH"]]:
+    def run(self, state: AgentState) -> Command[Literal[*SUPERVISOR_AGENTS, "FINISH"]]:
         print("#" * 20, "Supervisor Agent Run", "#" * 20,
               "current state:", state.get("initial_user_details", "N/A"))
         current_messages = state["messages"][-1]
