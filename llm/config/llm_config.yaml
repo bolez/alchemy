@@ -11,8 +11,10 @@ agents:
   - data_steward_agent
   - data_quality_agent
   - data_governance_agent
+  - data_contract_generator_agent
 supervisor:
   - data_engineer
   - data_steward_agent
   - data_quality_agent
   - data_governance_agent
+  - data_contract_generator_agent
