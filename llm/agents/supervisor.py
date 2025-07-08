@@ -5,8 +5,11 @@ from llm.models.agent_state import AgentState
 from llm.models.supervisor import Router, SUPERVISOR_AGENTS
 from langgraph.types import Command
 from langgraph.graph import START, END
+from typing import Literal
 
 from llm.models.supervisor import SUPERVISOR_AGENTS
+AgentLiteral = Literal["data_engineer", "data_steward_agent", "FINISH"]
+
 
 class Supervisor(BaseAgent):
     """
@@ -21,11 +24,12 @@ class Supervisor(BaseAgent):
                          structured_output_model=Router
                          )
 
-    def run(self, state: AgentState) -> AgentState:
-        print("#" * 20, "Supervisor Agent Run", "#" * 20, "current state:", state.get("initial_user_details", "N/A"))
+    def run(self, state: AgentState) -> Command[Literal["data_engineer", "data_steward_agent", "FINISH"]]:
+        print("#" * 20, "Supervisor Agent Run", "#" * 20,
+              "current state:", state.get("initial_user_details", "N/A"))
         current_messages = state["messages"][-1]
         domain = state.get("initial_user_details", {}).get("domain", "general")
-        agents = ", ".join(SUPERVISOR_AGENTS)
+        agents = ", ".join(SUPERVISOR_AGENTS + ["FINISH"])
 
         prompt = self.build_prompt({
             "domain": domain,
@@ -44,10 +48,8 @@ class Supervisor(BaseAgent):
         if next_agent == "FINISH":
             # state["finished"] = True
             return Command(goto=END)
-            
+
         return Command(
             update={**state,
                     "messages": [HumanMessage(content=f"Routing to {next_agent} for further processing. Reason: {resone}")]},
             goto=next_agent)
-
-

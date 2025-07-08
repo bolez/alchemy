@@ -28,9 +28,14 @@ class DataEngineer(BaseAgent):
         result = self.call_llm([SystemMessage(prompt), current_messages[0]])
         updated_contract_dict = result.model_dump()
         contract = state.get("contract", {})
+        # state["progress"]["data_engineer"] = "completed"
         final_schema_contract = {**contract, **updated_contract_dict}
         final_message = AIMessage(
             content=f"Schema generation complete for data product: {updated_contract_dict}")
-        return {**state,
-                **{"messages": [final_message],
-                   "contract": final_schema_contract}}
+        state["messages"] = [final_message]
+        # updated_state = self.update_agent_state(state, is_completed=True)
+        return {
+            "messages": [final_message],
+            # **state,
+                # **updated_state,
+                "contract": final_schema_contract}
