@@ -11,6 +11,6 @@ Use the following Pydantic model to structure your response:
 
 **Parsed Schema Content** (`source_schemas`):
 
-    {{json.dumps(source_schemas['data'])}}
+    {{json.dumps(source_schemas['data']) | safe}}
     Initial user details:
-    {{initial_message}}
+    {{initial_message | safe}}

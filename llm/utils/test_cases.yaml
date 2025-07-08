@@ -1,0 +1,565 @@
+enum:
+  description: "Checks that values in the column belong to a predefined set of allowed values."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_in_set:
+          column_name: "status"
+          value_set: ["active", "inactive", "pending"]
+
+range:
+  description: "Ensures that numeric values in the column fall within a specified range."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_between:
+          column_name: "age"
+          min_value: 18
+          max_value: 65
+
+regex:
+  description: "Validates that values in the column match a given regular expression pattern."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_match_regex:
+          column_name: "email"
+          regex: "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+
+not_null:
+  description: "Ensures that no null values are present in the column."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_not_be_null:
+          column_name: "user_id"
+
+unique:
+  description: "Checks that all values in the column are unique."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_unique:
+          column_name: "email"
+
+custom:
+  description: "Applies a custom SQL expression to validate the column or row."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_satisfy_sql_expression:
+          column_name: "score"
+          sql_expression: "score >= passing_score"
+
+foreign_key:
+  description: "Ensures that the values in the column match keys from a referenced model."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_in_set:
+          column_name: "customer_id"
+          value_set: "{{ ref('dim_customers') | dbt_utils.get_column_values('customer_id') }}"
+
+expect_column_to_exist:
+  description: "Ensures that a specified column exists in the model."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_to_exist:
+          column_name: "customer_id"
+
+expect_row_values_to_have_recent_data:
+  description: "Verifies that the dates in a specified column are within a certain interval from the current date and time."
+  example: |
+    tests:
+      - dbt_expectations.expect_row_values_to_have_recent_data:
+          column_name: "updated_at"
+          interval: 24
+          datepart: "hour"
+
+expect_grouped_row_values_to_have_recent_data:
+  description: "Checks for the presence of recent data within each group defined by the group_by columns."
+  example: |
+    tests:
+      - dbt_expectations.expect_grouped_row_values_to_have_recent_data:
+          timestamp_column: "updated_at"
+          interval: 1
+          datepart: "day"
+          group_by: ["user_id"]
+
+expect_table_aggregation_to_equal_other_table:
+  description: "Ensures that the aggregation of a column in one table matches that of another table."
+  example: |
+    tests:
+      - dbt_expectations.expect_table_aggregation_to_equal_other_table:
+          expression: "sum(revenue)"
+          compare_model: ref('archived_revenue')
+          compare_expression: "sum(revenue)"
+          group_by: ["account_id", "month"]
+          compare_group_by: ["account_id", "month"]
+          tolerance: 0.01
+
+expect_table_column_count_to_be_between:
+  description: "Validates that the number of columns in a table is within a specified range."
+  example: |
+    tests:
+      - dbt_expectations.expect_table_column_count_to_be_between:
+          minimum: 4
+          maximum: 6
+
+expect_table_column_count_to_equal_other_table:
+  description: "Ensures that the column count of one model matches that of another specified model."
+  example: |
+    tests:
+      - dbt_expectations.expect_table_column_count_to_equal_other_table:
+          compare_model: ref('source_model')
+
+expect_table_column_count_to_equal:
+  description: "Validates that the total number of columns present in a table matches an expected figure."
+  example: |
+    tests:
+      - dbt_expectations.expect_table_column_count_to_equal:
+          value: 8
+
+expect_table_columns_to_not_contain_set:
+  description: "Checks that none of the specified columns are present in the model."
+  example: |
+    tests:
+      - dbt_expectations.expect_table_columns_to_not_contain_set:
+          column_list: ["deprecated_column1", "deprecated_column2"]
+
+expect_table_columns_to_contain_set:
+  description: "Verifies that the specified columns are present in the model."
+  example: |
+    tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          column_list: ["id", "name", "email"]
+
+expect_table_columns_to_match_ordered_list:
+  description: "Validates that the columns in the model match the specified ordered list exactly."
+  example: |
+    tests:
+      - dbt_expectations.expect_table_columns_to_match_ordered_list:
+          ordered_column_list: ["id", "name", "email", "created_at"]
+
+expect_table_columns_to_match_set:
+  description: "Checks that the columns in the model match the specified set, regardless of order."
+  example: |
+    tests:
+      - dbt_expectations.expect_table_columns_to_match_set:
+          column_list: ["id", "name", "email", "created_at"]
+
+expect_table_row_count_to_be_between:
+  description: "Validates that the number of rows in a table is within a specified range."
+  example: |
+    tests:
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          minimum: 1000
+          maximum: 5000
+
+expect_table_row_count_to_equal_other_table:
+  description: "Ensures that the row count of one model matches that of another specified model."
+  example: |
+    tests:
+      - dbt_expectations.expect_table_row_count_to_equal_other_table:
+          compare_model: ref('source_model')
+
+expect_table_row_count_to_equal_other_table_times_factor:
+  description: "Validates that the row count of one model equals the row count of another model multiplied by a specified factor."
+  example: |
+    tests:
+      - dbt_expectations.expect_table_row_count_to_equal_other_table_times_factor:
+          compare_model: ref('source_model')
+          factor: 2
+
+expect_table_row_count_to_equal:
+  description: "Checks that the number of rows in a table matches an expected value."
+  example: |
+    tests:
+      - dbt_expectations.expect_table_row_count_to_equal:
+          value: 1000
+expect_column_values_to_be_null:
+  description: "Checks that all values in the specified column are NULL."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_null:
+          column_name: "deprecated_field"
+
+expect_column_values_to_not_be_null:
+  description: "Ensures that no NULL values are present in the specified column."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_not_be_null:
+          column_name: "user_id"
+
+expect_column_values_to_be_unique:
+  description: "Validates that all values in the specified column are unique."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_unique:
+          column_name: "email"
+
+expect_column_values_to_be_of_type:
+  description: "Checks that all values in the column match the specified data type."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_of_type:
+          column_name: "signup_date"
+          column_type: "date"
+
+expect_column_values_to_be_in_type_list:
+  description: "Ensures that the column's data type is one of the allowed types."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_in_type_list:
+          column_name: "price"
+          column_type_list: ["float", "double precision"]
+
+expect_column_values_to_have_consistent_casing:
+  description: "Validates that all values in a text column use the same casing style (e.g., upper, lower, title)."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_have_consistent_casing:
+          column_name: "country"
+          casing_style: "lower"
+expect_column_values_to_be_in_set:
+  description: "Checks that all column values are from a predefined set."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_in_set:
+          column_name: "status"
+          value_set: ["active", "inactive", "pending"]
+
+expect_column_values_to_not_be_in_set:
+  description: "Ensures no values in the column are from the disallowed set."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_not_be_in_set:
+          column_name: "country_code"
+          value_set: ["ZZ", "XX", "UNKNOWN"]
+
+expect_column_values_to_be_between:
+  description: "Validates that numeric values in a column fall within a specified range."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_between:
+          column_name: "age"
+          min_value: 18
+          max_value: 99
+
+expect_column_values_to_be_decreasing:
+  description: "Checks that values in the column are monotonically decreasing."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_decreasing:
+          column_name: "end_date"
+
+expect_column_values_to_be_increasing:
+  description: "Checks that values in the column are monotonically increasing."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_increasing:
+          column_name: "created_at"
+expect_column_value_lengths_to_be_between:
+  description: "Checks if the length of values in the column falls within the specified range."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_value_lengths_to_be_between:
+          column_name: "username"
+          min_value: 3
+          max_value: 15
+
+expect_column_value_lengths_to_equal:
+  description: "Ensures that all values in the column have a fixed length."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_value_lengths_to_equal:
+          column_name: "postal_code"
+          value: 5
+
+expect_column_values_to_match_like_pattern:
+  description: "Validates that all values match a single SQL LIKE pattern."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_match_like_pattern:
+          column_name: "email"
+          like_pattern: "%@example.com"
+
+expect_column_values_to_match_like_pattern_list:
+  description: "Checks that all values match at least one pattern in a list of SQL LIKE patterns."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_match_like_pattern_list:
+          column_name: "url"
+          like_pattern_list:
+            - "https://%.example.com/%"
+            - "http://%.example.net/%"
+
+expect_column_values_to_match_regex:
+  description: "Validates that all values in the column match a single regex pattern."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_match_regex:
+          column_name: "phone_number"
+          regex: "^\\+1-\\d{3}-\\d{3}-\\d{4}$"
+
+expect_column_values_to_match_regex_list:
+  description: "Ensures all values match at least one regex from a list of regex patterns."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_match_regex_list:
+          column_name: "identifier"
+          regex_list:
+            - "^A\\d{5}$"
+            - "^B\\d{5}$"
+
+expect_column_values_to_not_match_like_pattern:
+  description: "Ensures that no values in the column match the specified SQL LIKE pattern."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_not_match_like_pattern:
+          column_name: "email"
+          like_pattern: "%@spam.com"
+
+expect_column_values_to_not_match_like_pattern_list:
+  description: "Ensures no value matches any pattern in a list of SQL LIKE patterns."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_not_match_like_pattern_list:
+          column_name: "ip_address"
+          like_pattern_list:
+            - "192.168.%"
+            - "10.0.%"
+
+expect_column_values_to_not_match_regex:
+  description: "Ensures that no values in the column match a single regex pattern."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_not_match_regex:
+          column_name: "temp_code"
+          regex: "^TEMP.*$"
+
+expect_column_values_to_not_match_regex_list:
+  description: "Ensures values do not match any regex in the list."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_not_match_regex_list:
+          column_name: "tracking_id"
+          regex_list:
+            - "^DEBUG.*"
+            - "^TEST.*"
+expect_column_distinct_count_to_be_greater_than:
+  description: "Asserts the distinct count of values in a column is greater than a threshold."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_distinct_count_to_be_greater_than:
+          column_name: "user_id"
+          value: 100
+
+expect_column_distinct_count_to_be_less_than:
+  description: "Asserts the distinct count of values in a column is less than a threshold."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_distinct_count_to_be_less_than:
+          column_name: "country_code"
+          value: 300
+
+expect_column_distinct_count_to_equal_other_table:
+  description: "Compares the distinct count of a column with the same or another column in another table."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_distinct_count_to_equal_other_table:
+          column_name: "customer_id"
+          other_table: "ref('customers')"
+          other_column_name: "id"
+
+expect_column_distinct_count_to_equal:
+  description: "Asserts the column has exactly the specified number of distinct values."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_distinct_count_to_equal:
+          column_name: "status"
+          value: 4
+
+expect_column_distinct_values_to_be_in_set:
+  description: "Ensures all distinct column values are within a specified set."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_distinct_values_to_be_in_set:
+          column_name: "department"
+          value_set: ["Sales", "Marketing", "Engineering"]
+
+expect_column_distinct_values_to_contain_set:
+  description: "Validates that the set of column values contains all required values."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_distinct_values_to_contain_set:
+          column_name: "role"
+          value_set: ["Admin", "User", "Viewer"]
+
+expect_column_distinct_values_to_equal_set:
+  description: "Asserts the set of distinct values is exactly equal to the expected set."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_distinct_values_to_equal_set:
+          column_name: "status"
+          value_set: ["active", "inactive", "pending"]
+
+expect_column_max_to_be_between:
+  description: "Checks if the maximum value in the column falls within a specified range."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_max_to_be_between:
+          column_name: "price"
+          min_value: 0
+          max_value: 1000
+
+expect_column_mean_to_be_between:
+  description: "Asserts that the mean of the column values lies within a range."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_mean_to_be_between:
+          column_name: "score"
+          min_value: 60
+          max_value: 90
+
+expect_column_median_to_be_between:
+  description: "Checks if the median value in the column is within the specified bounds."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_median_to_be_between:
+          column_name: "salary"
+          min_value: 50000
+          max_value: 100000
+
+expect_column_min_to_be_between:
+  description: "Validates that the minimum column value falls in the given range."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_min_to_be_between:
+          column_name: "discount"
+          min_value: 0
+          max_value: 10
+
+expect_column_most_common_value_to_be_in_set:
+  description: "Checks that the most frequent value in a column is part of a specified set."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_most_common_value_to_be_in_set:
+          column_name: "plan_type"
+          value_set: ["basic", "premium"]
+
+expect_column_proportion_of_unique_values_to_be_between:
+  description: "Validates the proportion of unique values in a column is within a certain range."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_proportion_of_unique_values_to_be_between:
+          column_name: "transaction_id"
+          min_value: 0.9
+          max_value: 1.0
+
+expect_column_quantile_values_to_be_between:
+  description: "Checks that specified quantile values for a column fall within given bounds."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_quantile_values_to_be_between:
+          column_name: "age"
+          quantile_ranges:
+            - quantile: 0.25
+              min_value: 20
+              max_value: 30
+            - quantile: 0.5
+              min_value: 30
+              max_value: 40
+
+expect_column_stdev_to_be_between:
+  description: "Ensures the standard deviation of a column is within an expected range."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_stdev_to_be_between:
+          column_name: "score"
+          min_value: 5
+          max_value: 20
+
+expect_column_sum_to_be_between:
+  description: "Checks if the sum of all values in the column is within a range."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_sum_to_be_between:
+          column_name: "revenue"
+          min_value: 100000
+          max_value: 500000
+
+expect_column_unique_value_count_to_be_between:
+  description: "Validates that the number of unique values in a column falls within the specified range."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_unique_value_count_to_be_between:
+          column_name: "email"
+          min_value: 1000
+          max_value: 100000
+expect_column_pair_values_A_to_be_greater_than_B:
+  description: "Checks that values in one column are greater than values in another column in the same row."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_pair_values_A_to_be_greater_than_B:
+          column_A: "end_date"
+          column_B: "start_date"
+
+expect_column_pair_values_to_be_equal:
+  description: "Checks that values in one column are equal to values in another column row-wise."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_pair_values_to_be_equal:
+          column_A: "expected_amount"
+          column_B: "actual_amount"
+
+expect_column_pair_values_to_be_in_set:
+  description: "Validates that the (A, B) column pair appears in a specific set of value pairs."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_pair_values_to_be_in_set:
+          column_A: "country"
+          column_B: "currency"
+          value_set:
+            - ["US", "USD"]
+            - ["UK", "GBP"]
+            - ["IN", "INR"]
+
+expect_compound_columns_to_be_unique:
+  description: "Checks that the combination of multiple columns is unique."
+  example: |
+    tests:
+      - dbt_expectations.expect_compound_columns_to_be_unique:
+          column_list: ["user_id", "event_type", "event_timestamp"]
+
+expect_multicolumn_sum_to_equal:
+  description: "Validates that the sum of several columns in each row equals a given target value or column."
+  example: |
+    tests:
+      - dbt_expectations.expect_multicolumn_sum_to_equal:
+          column_list: ["math_score", "science_score", "english_score"]
+          target_column: "total_score"
+
+expect_select_column_values_to_be_unique_within_record:
+  description: "Ensures that selected column values are unique within each record (i.e., row-wise uniqueness across selected fields)."
+  example: |
+    tests:
+      - dbt_expectations.expect_select_column_values_to_be_unique_within_record:
+          column_list: ["choice_1", "choice_2", "choice_3"]
+expect_column_values_to_be_within_n_moving_stdevs:
+  description: "Checks that each value in a column lies within N moving standard deviations from a moving average."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_within_n_moving_stdevs:
+          column_name: "temperature"
+          n_stdevs: 3
+          window_size: 5
+
+expect_column_values_to_be_within_n_stdevs:
+  description: "Ensures that values in a column lie within N standard deviations from the mean."
+  example: |
+    tests:
+      - dbt_expectations.expect_column_values_to_be_within_n_stdevs:
+          column_name: "sales"
+          n_stdevs: 2
+
+expect_row_values_to_have_data_for_every_n_datepart:
+  description: "Validates that row values have data for every N units of a specified date part."
+  example: |
+    tests:
+      - dbt_expectations.expect_row_values_to_have_data_for_every_n_datepart:
+          datepart: "month"
+          n: 1

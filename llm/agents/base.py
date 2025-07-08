@@ -11,12 +11,12 @@ from langchain_core.messages import AIMessage, BaseMessage
 from llm.models.agent_state import AgentState
 from llm.config.loader import load_config
 import json
+from langgraph.types import Command
 config = load_config()
 llm_config = config["llm"]
 AGENT_LIST = config["agents"]
 
 load_dotenv()
-
 
 
 class BaseAgent(ABC):
@@ -68,8 +68,6 @@ class BaseAgent(ABC):
             "progress": progress,
         }
 
-    
-
     def call_llm(self, messages: Union[str, List[BaseMessage]], use_tools: bool = False) -> AIMessage:
         model = self.llm
         if use_tools and self.tools:
@@ -116,7 +114,28 @@ class BaseAgent(ABC):
         """
         pass
 
+    def update_agent_state(self, state: AgentState, is_completed: bool = True, 
+                           is_revised: bool = False,
+                           is_reviewed: bool = False) -> AgentState:
+        """
+        Updates the agent state with the current agent's progress and status.
+        
+        Args:
+            state (AgentState): The current state of the agent.
+        
+        Returns:
+            AgentState: The updated state with progress and status.
+        """
+        agent = self.agent_name
+        state["progress"][agent] = "completed" if is_completed else "pending"
+        state["agent_status"].setdefault(agent, {})
+        state["agent_status"][agent].setdefault("revised", is_revised)
+        state["agent_status"][agent].setdefault("reviewed", is_reviewed)
+        return state
+
     def __call__(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        agent = self.agent_name
+        # self.update_agent_state(state, is_completed=False)
         try:
             with trace(
                     name=f"{self.agent_name}_agent_run",
@@ -124,10 +143,30 @@ class BaseAgent(ABC):
                         "agent": self.agent_name,
                         "state_keys": list(state.keys())
                     }):
-                return self.run(state)
+                result = self.run(state)
+                if isinstance(result, Command):
+                    return result
+
+                # Post-processing
+                if agent != "system":
+                    state["progress"][agent] = "completed"
+                    state["agent_status"].setdefault(agent, {})
+                    state["agent_status"][agent].setdefault("revised", False)
+                    state["agent_status"][agent].setdefault("reviewed", False)
+                    state["current_agent"] = self.agent_name
+                return {**state, **result}
+                # return result
+
         except Exception as e:
+            # state["messages"] = [
+            #     AIMessage(content=f"{self.agent_name} failed: {str(e)}")
+            # ]
+            # state["errors"] = state.get("errors", [])
+            # return state
+            print(f"Error in agent {agent}: {str(e)}")
+            print("eeee"*100)
+            state["progress"][agent] = "failed"
             state["messages"] = [
-                AIMessage(content=f"{self.agent_name} failed: {str(e)}")
-            ]
-            state["errors"] = state.get("errors", [])
+                AIMessage(content=f"{agent} failed: {str(e)}")]
+            state.setdefault("errors", []).append(str(e))
             return state

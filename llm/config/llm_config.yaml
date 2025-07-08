@@ -1,8 +1,18 @@
 llm:
-  model: "gemini-2.0-flash"
+  model: "gemini-2.5-flash-lite-preview-06-17"
   temperature: 0
   max_tokens: null
   max_retries: 3
 agents:
   - system
-
+  - request_formating
+  - supervisor
+  - data_engineer
+  - data_steward_agent
+  - data_quality_agent
+  - data_governance_agent
+supervisor:
+  - data_engineer
+  - data_steward_agent
+  - data_quality_agent
+  - data_governance_agent
