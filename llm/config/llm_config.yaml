@@ -12,6 +12,7 @@ agents:
   - data_quality_agent
   - data_governance_agent
   - data_contract_generator_agent
+  - dbt_test_case_generator_agent
 
 supervisor:
   - data_engineer
@@ -19,5 +20,5 @@ supervisor:
   - data_quality_agent
   - data_governance_agent
   - data_contract_generator_agent
-  - data_governance_agent
+  - dbt_test_case_generator_agent
 
