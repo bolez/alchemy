@@ -15,7 +15,7 @@ class RequestFromating(BaseAgent):
                          )
 
     def run(self, state: AgentState) -> AgentState:
-        print("#" * 20, "request", "#" * 20)
+        # print("#" * 20, "request", "#" * 20)
         current_messages = state.get("messages", [])[0]
         source_schemas = state.get("source_schemas", {})
         initial_message = current_messages.content if state.get(

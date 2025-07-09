@@ -29,7 +29,7 @@ class DataContract(BaseModel):
     owner: Owner
     properties: List[ColumnSchema]
     rules: List[ColumnValidationRule]
-    data_refresh: DataRefresh
+    data_refresh: Optional[DataRefresh]
     sla: SLA
     allowed_operations: List[str]
     retention_policy: RetentionPolicy

@@ -15,9 +15,9 @@ class DataContractGeneratorAgent(BaseAgent):
 
     def run(self, state: AgentState) -> AgentState:
         contract = state.get("contract", {})
-        print("#" * 20, "Data Contract Generator Agent Run", "#" * 20)
-        print(contract)
-        print("#" * 20, "Data Contract Generator Agent Run", "#" * 20)
+        # print("#" * 20, "Data Contract Generator Agent Run", "#" * 20)
+        # print(contract)
+        # print("#" * 20, "Data Contract Generator Agent Run", "#" * 20)
         prompt = self.build_prompt({
             "contract": state.get("contract", {}),
         })
@@ -36,4 +36,4 @@ class DataContractGeneratorAgent(BaseAgent):
         final_message = [
             AIMessage(content=f"yaml and markdown files downloaded")]
 
-        return {"messages": [final_message]}
+        return {"messages": final_message}
