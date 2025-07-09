@@ -25,8 +25,8 @@ class Supervisor(BaseAgent):
                          )
 
     def run(self, state: AgentState) -> Command[Literal[*SUPERVISOR_AGENTS, "FINISH"]]:
-        print("#" * 20, "Supervisor Agent Run", "#" * 20,
-              "current state:", state.get("initial_user_details", "N/A"))
+        # print("#" * 20, "Supervisor Agent Run", "#" * 20,
+            #   "current state:", state.get("initial_user_details", "N/A"))
         current_messages = state["messages"][-1]
         domain = state.get("initial_user_details", {}).get("domain", "general")
         agents = ", ".join(SUPERVISOR_AGENTS + ["FINISH"])
