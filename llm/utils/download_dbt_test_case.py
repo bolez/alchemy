@@ -5,6 +5,7 @@ import yaml
 import ast
 
 
+
 def download_dbt_yaml(tests_data: Dict[str, List[Dict[str, Any]]], file_path: str = "schema.yml") -> None:
     """
     Convert DBT tests into a dbt-compatible YAML format and save to file.
@@ -18,7 +19,7 @@ def download_dbt_yaml(tests_data: Dict[str, List[Dict[str, Any]]], file_path: st
     columns_dict = defaultdict(lambda: {"description": "", "tests": []})
 
     for test in tests_data.get("tests", []):
-        print("Processing test:", test)
+
         col_name = test["column_name"]
         description = test.get("description", "")
         test_name = test["test_name"]

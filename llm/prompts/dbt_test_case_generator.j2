@@ -9,12 +9,14 @@ Output Requirements:
 - Use maximum rules from the Rule Reference to cover all columns in the user schema.
 - Contract Details has most of validation rules, use them to select rules from the Rule Reference and feel free to add new one.
 - If a column has test_parameters in DBTTest try to convert as a dictionary format .
+
 ---
 Rule Selection Guidelines:
 - Refer to both `description` and `example` in the Rule Reference to guide your application.
 - Use `Contract Details` for constraints such as required fields, allowed values, ranges, formats, or foreign keys.
 - Use `Source Schema` for column names, data types to further refine rule selection.
 - Consider the Contract Details as source of truth for beacuse it contains the most up-to-date information about the data.
+
 ---
 
 ### Rule Reference (Use these ONLY):
