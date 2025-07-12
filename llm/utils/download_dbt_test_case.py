@@ -2,6 +2,8 @@ from typing import Dict, List, Any
 from collections import defaultdict
 import json
 import yaml
+import ast
+
 
 
 def download_dbt_yaml(tests_data: Dict[str, List[Dict[str, Any]]], file_path: str = "schema.yml") -> None:
@@ -17,15 +19,17 @@ def download_dbt_yaml(tests_data: Dict[str, List[Dict[str, Any]]], file_path: st
     columns_dict = defaultdict(lambda: {"description": "", "tests": []})
 
     for test in tests_data.get("tests", []):
+
         col_name = test["column_name"]
         description = test.get("description", "")
         test_name = test["test_name"]
         params = None
         try:
-            params = eval(test["test_parameters"])
+            params = ast.literal_eval(test["test_parameters"])
             params.pop("column_name", None)
 
         except (json.JSONDecodeError, Exception) as e:
+            print(test["test_parameters"])
             print(f"Skipping malformed test parameters for column '{col_name}': {e}")
             # continue  # skip malformed JSON
 

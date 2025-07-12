@@ -32,7 +32,6 @@ def human_editing(state: AgentState):
     )
     print("#" * 20, "Human Editing", "#" * 20)
 
-    print(f"Human editing result: {result}")
     progress_dict = {"progress": state.get("progress", {})}
     
 
@@ -41,14 +40,11 @@ def human_editing(state: AgentState):
         state["agent_status"][currnt_agent]["revised"] = True
         state["agent_status"][currnt_agent]["reviewed"] = True
         final_response = state.get("contract", {})
-        print(f"Updated source schema after human editing: {final_response}")
         state["messages"] = [AIMessage(content=f"{currnt_agent} executed successfully and agent `{progress_dict}`, and contarcat genarated till now is {final_response}")]
 
     else:
-        print(f"Human editing result: {type(result)},{result}")
      
         final_response = json.loads(result)
-        print(f"Human editing result: {type(final_response)},{final_response}")
         state["agent_status"][currnt_agent]["revised"] = True
         state["agent_status"][currnt_agent]["reviewed"] = True
         state_data = {key: value for key, value in state.items() if key != "messages"}

@@ -17,12 +17,11 @@ You are a Data Steward with deep expertise in metadata curation, data classifica
 
         **Instructions**:
         - Do **not** alter column names, data types, or constraints.
-        - Use domain context to identify and classify PII (e.g., email, phone, address, national_id).
+        - Use domain context to identify and classify PII
         - Be thoughtful and realistic when recommending `freshness` and `delivery_window` — they must align with typical business expectations for this domain.
         - Suggest useful tags to describe the data product for discoverability.
-
-        Here is the base schema you will enrich:
-        {{source_schemas | safe}}
-
+        - Consider the Contract Details as source of truth for beacuse it contains the most up-to-date information about the data.
+        
+        
         Contract Details to help you enrich the schema:
         {{contract | safe}}

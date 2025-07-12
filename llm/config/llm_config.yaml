@@ -1,5 +1,5 @@
 llm:
-  model: "gemini-2.5-flash-lite-preview-06-17"
+  model: "gemini-2.5-flash"
   temperature: 0
   max_tokens: null
   max_retries: 3
