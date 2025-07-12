@@ -15,8 +15,9 @@ class DBTTest(BaseModel):
         None, description="Parameters specific to the dbt test. Can be a dict or a Jinja string."
     )
 
+
 class AllColumnsTest(BaseModel):
-    model_discription : str = Field(
+    model_discription: str = Field(
         ...,
         description="Description of the model to which the tests apply"
     )
