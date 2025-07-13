@@ -1,0 +1,63 @@
+llm:
+  model: "gpt-4"
+
+core_nodes:
+  - name: system_agent
+    class: SystemAgent
+  - name: request_formatting
+    class: RequestFromating
+  - name: superviser_agent
+    class: Supervisor
+  - name: tools
+    class: ToolNode
+
+agents:
+  - data_engineer
+  - data_steward_agent
+  - data_quality_agent
+  - data_governance_agent
+  - data_contract_generator_agent
+  - dbt_test_case_generator_agent
+  - human_editing
+
+edges:
+  - from: START
+    to: system_agent
+  - from: tools
+    to: system_agent
+  - from: request_formatting
+    to: superviser_agent
+
+  - from: system_agent
+    condition:
+      type: should_continue
+      paths:
+        continue: tools
+        respond: request_formatting
+  - from: data_engineer
+    to: human_editing
+  - from: data_steward_agent
+    to: human_editing
+  - from: data_quality_agent
+    to: human_editing
+  - from: data_governance_agent
+    to: human_editing
+  - from: human_editing
+    to: superviser_agent
+  - from: data_contract_generator_agent
+    to: superviser_agent
+  - from: dbt_test_case_generator_agent
+    to: superviser_agent
+
+  - from: superviser_agent
+    condition:
+      type: next_agent
+      paths:
+        data_engineer: data_engineer
+        data_steward_agent: data_steward_agent
+        data_quality_agent: data_quality_agent
+        data_governance_agent: data_governance_agent
+        data_contract_generator_agent: data_contract_generator_agent
+        dbt_test_case_generator_agent: dbt_test_case_generator_agent
+        human_editing: human_editing
+        FINISH: END
