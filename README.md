@@ -126,13 +126,13 @@ Navigate to https://smith.langchain.com to view full traces of LLM executions
 
 
 ## 📌 Notes on Human Review
-. When the system reaches a **human-in-the-loop** step, it will pause.
+- When the system reaches a **human-in-the-loop** step, it will pause.
 
-. The current contract (in JSON) is opened in your default terminal editor (e.g., vi, nano).
+- The current contract (in JSON) is opened in your default terminal editor (e.g., vi, nano).
 
-. Once saved and closed, execution resumes with your edits.
+- Once saved and closed, execution resumes with your edits.
 
-. This ensures accuracy while allowing you to enforce governance or apply overrides manually.
+- This ensures accuracy while allowing you to enforce governance or apply overrides manually.
 
 
 
