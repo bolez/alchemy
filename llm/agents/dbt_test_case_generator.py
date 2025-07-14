@@ -11,19 +11,17 @@ class DbtTestCaseGeneratorAgent(BaseAgent):
     It uses LLM to process the initial user request and generate a structured schema.
     """
 
-    def __init__(self, model: str):
-        super().__init__(model=model,
-                         agent_name="dbt_test_case_generator_agent",
+    def __init__(self):
+        super().__init__(agent_name="dbt_test_case_generator_agent",
                          prompt_file="dbt_test_case_generator.j2",
                          structured_output_model=AllColumnsTest
                          )
 
     def run(self, state: AgentState) -> AgentState:
 
-        # current_messages = state.get("messages", [])[0]
         source_schemas = state.get("source_schemas", {})
         contract = state.get("contract", {})
-
+        domain = state.get("initial_user_details", {}). get("domain", "default_domain")
         prompt = self.build_prompt({
             "rule_refrences": rule_refrences,
             "contract": contract,
@@ -34,7 +32,7 @@ class DbtTestCaseGeneratorAgent(BaseAgent):
             content="generate dbt test cases for the provided schema")])
         updated_contract_dict = result.model_dump()
         
-        download_dbt_yaml(updated_contract_dict)
+        download_dbt_yaml(domain, updated_contract_dict)
         # final_schema_contract = {**contract, **updated_contract_dict}
         final_message = AIMessage(
             content=f"DBT test cases generated: {updated_contract_dict}")

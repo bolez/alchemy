@@ -8,9 +8,8 @@ from llm.utils.data_quality_rules import rule_refrences
 
 
 class DataQualityAgent(BaseAgent):
-    def __init__(self, model: str):
-        super().__init__(model=model,
-                         agent_name="data_quality_agent",
+    def __init__(self):
+        super().__init__(agent_name="data_quality_agent",
                          prompt_file="data_quality.j2",
                          structured_output_model=ValidationRule
                          )

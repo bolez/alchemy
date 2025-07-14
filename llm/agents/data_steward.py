@@ -10,9 +10,8 @@ class DataStewardAgent(BaseAgent):
     It uses LLM to process the initial user request and generate a structured schema.
     """
 
-    def __init__(self, model: str):
-        super().__init__(model=model,
-                         agent_name="data_steward_agent",
+    def __init__(self):
+        super().__init__(agent_name="data_steward_agent",
                          prompt_file="data_steward.j2",
                          structured_output_model=SemanticMetadata
                          )

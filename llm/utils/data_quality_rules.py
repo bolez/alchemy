@@ -9,7 +9,6 @@ def retrieve_rule_examples() -> str:
     all_rules = []
     with open("llm/utils/test_cases.yaml", "r") as f:
         rules_yaml = yaml.safe_load(f)
-        # print(rules_yaml)
         all_rules = list(rules_yaml.keys())
     result_blocks = []
     for rule, detailes in rules_yaml.items():

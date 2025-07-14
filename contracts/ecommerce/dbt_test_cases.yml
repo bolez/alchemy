@@ -1,0 +1,123 @@
+models:
+- model_name: customer_nation
+  description: This data product contains comprehensive customer information, including
+    personal details, contact information, account balance, and associated nation
+    details, crucial for e-commerce operations and customer relationship management.
+  columns:
+  - name: c_custkey
+    description: Unique identifier for the customer.
+    tests:
+    - dbt_expectations.expect_column_values_to_not_be_null:
+        column_name: c_custkey
+    - dbt_expectations.expect_column_values_to_be_unique:
+        column_name: c_custkey
+    - dbt_expectations.expect_column_values_to_be_of_type:
+        column_name: c_custkey
+        column_type: number
+    - dbt_expectations.expect_column_min_to_be_between:
+        column_name: c_custkey
+        min_value: 1.0
+        max_value: 10000000.0
+  - name: c_name
+    description: Full name of the customer.
+    tests:
+    - dbt_expectations.expect_column_values_to_not_be_null:
+        column_name: c_name
+    - dbt_expectations.expect_column_values_to_be_of_type:
+        column_name: c_name
+        column_type: varchar
+    - dbt_expectations.expect_column_value_lengths_to_be_between:
+        column_name: c_name
+        min_value: 2.0
+        max_value: 100.0
+    - dbt_expectations.expect_column_values_to_have_consistent_casing:
+        column_name: c_name
+        casing_style: title
+  - name: c_address
+    description: Physical address of the customer.
+    tests:
+    - dbt_expectations.expect_column_values_to_not_be_null:
+        column_name: c_address
+    - dbt_expectations.expect_column_values_to_be_of_type:
+        column_name: c_address
+        column_type: varchar
+    - dbt_expectations.expect_column_value_lengths_to_be_between:
+        column_name: c_address
+        min_value: 5.0
+        max_value: 200.0
+  - name: c_nationkey
+    description: Foreign key linking to the nation table, representing the customer's
+      nation.
+    tests:
+    - dbt_expectations.expect_column_values_to_not_be_null:
+        column_name: c_nationkey
+    - dbt_expectations.expect_column_values_to_be_of_type:
+        column_name: c_nationkey
+        column_type: number
+    - dbt_expectations.expect_column_values_to_be_in_set:
+        column_name: c_nationkey
+        value_set: '{{ ref(''dim_nations'') | dbt_utils.get_column_values(''n_nationkey'')
+          }}'
+    - dbt_expectations.expect_column_min_to_be_between:
+        column_name: c_nationkey
+        min_value: 0.0
+        max_value: 100.0
+  - name: c_phone
+    description: Customer's phone number.
+    tests:
+    - dbt_expectations.expect_column_values_to_not_be_null:
+        column_name: c_phone
+    - dbt_expectations.expect_column_values_to_be_of_type:
+        column_name: c_phone
+        column_type: varchar
+    - dbt_expectations.expect_column_values_to_match_regex:
+        column_name: c_phone
+        regex: ^\d{2}-\d{3}-\d{3}-\d{4}$
+    - dbt_expectations.expect_column_value_lengths_to_be_between:
+        column_name: c_phone
+        min_value: 12.0
+        max_value: 15.0
+  - name: c_acctbal
+    description: Current account balance of the customer.
+    tests:
+    - dbt_expectations.expect_column_values_to_not_be_null:
+        column_name: c_acctbal
+    - dbt_expectations.expect_column_values_to_be_of_type:
+        column_name: c_acctbal
+        column_type: number
+    - dbt_expectations.expect_column_values_to_be_between:
+        column_name: c_acctbal
+        min_value: -1000.0
+        max_value: 100000.0
+    - dbt_expectations.expect_column_mean_to_be_between:
+        column_name: c_acctbal
+        min_value: 100.0
+        max_value: 50000.0
+  - name: c_comments
+    description: General comments or notes about the customer. This field may contain
+      sensitive or personal information.
+    tests:
+    - dbt_expectations.expect_column_values_to_be_of_type:
+        column_name: c_comments
+        column_type: varchar
+    - dbt_expectations.expect_column_value_lengths_to_be_between:
+        column_name: c_comments
+        min_value: 0.0
+        max_value: 500.0
+  - name: n_names
+    description: Name of the nation associated with the customer.
+    tests:
+    - dbt_expectations.expect_column_values_to_not_be_null:
+        column_name: n_names
+    - dbt_expectations.expect_column_values_to_be_of_type:
+        column_name: n_names
+        column_type: varchar
+    - dbt_expectations.expect_column_values_to_be_unique:
+        column_name: n_names
+    - dbt_expectations.expect_column_values_to_have_consistent_casing:
+        column_name: n_names
+        casing_style: title
+    - dbt_expectations.expect_column_distinct_count_to_be_greater_than:
+        column_name: n_names
+        value: 5.0
+version: 2

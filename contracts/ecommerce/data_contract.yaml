@@ -1,0 +1,343 @@
+version: 1.0.0
+model_name: customer_nation
+data_product_description: This data product contains comprehensive customer information,
+  including personal details, contact information, account balance, and associated
+  nation details, crucial for e-commerce operations and customer relationship management.
+tags:
+- Customer
+- e-commerce
+- CRM
+- Personal Data
+- Account
+owner:
+  name: Gaurav Bole
+  email: gauravbole2@gmail.com
+properties:
+- column_name: c_custkey
+  type: number
+  constraints:
+  - primary_key: true
+    unique: true
+    foreign_key_detailes: null
+  description: Unique identifier for the customer.
+  pii: true
+- column_name: c_name
+  type: varchar
+  constraints: null
+  description: Full name of the customer.
+  pii: true
+- column_name: c_address
+  type: varchar
+  constraints: null
+  description: Physical address of the customer.
+  pii: true
+- column_name: c_nationkey
+  type: number
+  constraints:
+  - primary_key: false
+    unique: false
+    foreign_key_detailes:
+      table: nation
+      column: n_nationkey
+  description: Foreign key linking to the nation table, representing the customer's
+    nation.
+  pii: false
+- column_name: c_phone
+  type: varchar
+  constraints: null
+  description: Customer's phone number.
+  pii: true
+- column_name: c_acctbal
+  type: number
+  constraints: null
+  description: Current account balance of the customer.
+  pii: false
+- column_name: c_comments
+  type: varchar
+  constraints: null
+  description: General comments or notes about the customer. This field may contain
+    sensitive or personal information.
+  pii: true
+- column_name: n_names
+  type: varchar
+  constraints: null
+  description: Name of the nation associated with the customer.
+  pii: false
+rules:
+- column: c_custkey
+  column_rules:
+  - name: Customer key not null
+    type: not_null
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: null
+  - name: Customer key unique
+    type: unique
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: null
+  - name: Customer key type check
+    type: expect_column_values_to_be_of_type
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: number
+  - name: Customer key min value
+    type: expect_column_min_to_be_between
+    allowed_values: null
+    min: 1.0
+    max: 10000000.0
+    pattern: null
+    enum: null
+    logic: null
+- column: c_name
+  column_rules:
+  - name: Customer name not null
+    type: not_null
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: null
+  - name: Customer name type check
+    type: expect_column_values_to_be_of_type
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: varchar
+  - name: Customer name length
+    type: expect_column_value_lengths_to_be_between
+    allowed_values: null
+    min: 2.0
+    max: 100.0
+    pattern: null
+    enum: null
+    logic: null
+  - name: Customer name consistent casing
+    type: expect_column_values_to_have_consistent_casing
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: title
+- column: c_address
+  column_rules:
+  - name: Customer address not null
+    type: not_null
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: null
+  - name: Customer address type check
+    type: expect_column_values_to_be_of_type
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: varchar
+  - name: Customer address length
+    type: expect_column_value_lengths_to_be_between
+    allowed_values: null
+    min: 5.0
+    max: 200.0
+    pattern: null
+    enum: null
+    logic: null
+- column: c_nationkey
+  column_rules:
+  - name: Nation key not null
+    type: not_null
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: null
+  - name: Nation key type check
+    type: expect_column_values_to_be_of_type
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: number
+  - name: Nation key foreign key
+    type: foreign_key
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: '{{ ref(''dim_nations'') | dbt_utils.get_column_values(''n_nationkey'')
+      }}'
+  - name: Nation key min value
+    type: expect_column_min_to_be_between
+    allowed_values: null
+    min: 0.0
+    max: 100.0
+    pattern: null
+    enum: null
+    logic: null
+- column: c_phone
+  column_rules:
+  - name: Phone not null
+    type: not_null
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: null
+  - name: Phone type check
+    type: expect_column_values_to_be_of_type
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: varchar
+  - name: Phone regex pattern
+    type: regex
+    allowed_values: null
+    min: null
+    max: null
+    pattern: ^\d{2}-\d{3}-\d{3}-\d{4}$
+    enum: null
+    logic: null
+  - name: Phone length
+    type: expect_column_value_lengths_to_be_between
+    allowed_values: null
+    min: 12.0
+    max: 15.0
+    pattern: null
+    enum: null
+    logic: null
+- column: c_acctbal
+  column_rules:
+  - name: Account balance not null
+    type: not_null
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: null
+  - name: Account balance type check
+    type: expect_column_values_to_be_of_type
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: number
+  - name: Account balance range
+    type: range
+    allowed_values: null
+    min: -1000.0
+    max: 100000.0
+    pattern: null
+    enum: null
+    logic: null
+  - name: Account balance mean
+    type: expect_column_mean_to_be_between
+    allowed_values: null
+    min: 100.0
+    max: 50000.0
+    pattern: null
+    enum: null
+    logic: null
+- column: c_comments
+  column_rules:
+  - name: Comments type check
+    type: expect_column_values_to_be_of_type
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: varchar
+  - name: Comments length
+    type: expect_column_value_lengths_to_be_between
+    allowed_values: null
+    min: 0.0
+    max: 500.0
+    pattern: null
+    enum: null
+    logic: null
+- column: n_names
+  column_rules:
+  - name: Nation name not null
+    type: not_null
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: null
+  - name: Nation name type check
+    type: expect_column_values_to_be_of_type
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: varchar
+  - name: Nation name unique
+    type: unique
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: null
+  - name: Nation name consistent casing
+    type: expect_column_values_to_have_consistent_casing
+    allowed_values: null
+    min: null
+    max: null
+    pattern: null
+    enum: null
+    logic: title
+  - name: Nation distinct count
+    type: expect_column_distinct_count_to_be_greater_than
+    allowed_values: null
+    min: 5.0
+    max: null
+    pattern: null
+    enum: null
+    logic: null
+data_refresh:
+  frequency: daily
+  refresh_method: full_load
+  schedule: 0 2 * * *
+sla:
+  freshness: Daily
+  delivery_window: Between 2:00 AM and 3:00 AM UTC daily
+  availability: null
+  max_null_rate: 1%
+  incident_response:
+    notify: gauravbole2@gmail.com
+    within_minutes: 60
+allowed_operations:
+- read
+- write
+retention_policy:
+  type: time-based
+  duration: 7 years
+contract_approved: true
+approved_by: gauravbole2@gmail.com

@@ -1,9 +1,8 @@
 
 
-# from base import Agent
 from pydantic import BaseModel
 from llm.agents.base import BaseAgent
-# from prompts import SystemPrompt
+
 
 from langchain_core.messages import SystemMessage, AIMessage, BaseMessage, ToolMessage
 from llm.models.agent_state import AgentState
@@ -16,16 +15,13 @@ from typing import Dict, Any
 
 class SystemAgent(BaseAgent):
 
-    def __init__(self, model: str):
+    def __init__(self):
         tools_list = AGENT_TOOL_REGISTRY.get("system", [])
         tools_dict = {tool.name: tool for tool in tools_list}
 
-        super().__init__(model=model,
-                         agent_name="system",
+        super().__init__(agent_name="system",
                          prompt_file="request_processing.j2",
-
                          tools=tools_dict
-
                          )
 
     def process_tool_calls(self, state: AgentState, tool_response: BaseMessage) -> AgentState:

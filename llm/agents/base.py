@@ -22,7 +22,7 @@ load_dotenv()
 class BaseAgent(ABC):
     def __init__(
         self,
-        model: LLMModel,
+        model: Optional[LLMModel] = None,
         prompt_file: Optional[str] = None,
         prompt_text: Optional[str] = None,
         agent_name: Optional[str] = "",
@@ -147,7 +147,6 @@ class BaseAgent(ABC):
                 if isinstance(result, Command):
                     return result
 
-                # Post-processing
                 if agent != "system":
                     state["progress"][agent] = "completed"
                     state["agent_status"].setdefault(agent, {})

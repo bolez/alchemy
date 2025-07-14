@@ -17,16 +17,13 @@ class Supervisor(BaseAgent):
     It can assign tasks, monitor progress, and ensure that the overall objectives are met.
     """
 
-    def __init__(self, model: str):
-        super().__init__(model=model,
-                         agent_name="supervisor",
+    def __init__(self):
+        super().__init__(agent_name="supervisor",
                          prompt_file="supervisor.j2",
                          structured_output_model=Router
                          )
 
     def run(self, state: AgentState) -> Command[Literal[*SUPERVISOR_AGENTS, "FINISH"]]:
-        # print("#" * 20, "Supervisor Agent Run", "#" * 20,
-            #   "current state:", state.get("initial_user_details", "N/A"))
         current_messages = state["messages"][-1]
         domain = state.get("initial_user_details", {}).get("domain", "general")
         agents = ", ".join(SUPERVISOR_AGENTS + ["FINISH"])
