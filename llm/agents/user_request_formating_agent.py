@@ -6,16 +6,14 @@ from llm.models.agent_state import AgentState
 
 
 class RequestFromating(BaseAgent):
-    def __init__(self, model: str):
+    def __init__(self):
 
-        super().__init__(model=model,
-                         agent_name="request_formating",
+        super().__init__(agent_name="request_formating",
                          prompt_file="request_formating.j2",
                          structured_output_model=UserRequest
                          )
 
     def run(self, state: AgentState) -> AgentState:
-        # print("#" * 20, "request", "#" * 20)
         current_messages = state.get("messages", [])[0]
         source_schemas = state.get("source_schemas", {})
         initial_message = current_messages.content if state.get(

@@ -8,9 +8,8 @@ from datetime import datetime
 
 class DataGovernanceAgent(BaseAgent):
 
-    def __init__(self, model: str):
-        super().__init__(model=model,
-                         agent_name="data_governance",
+    def __init__(self):
+        super().__init__(agent_name="data_governance",
                          prompt_file="data_governance.j2",
                          structured_output_model=DataGovernance
                          )
