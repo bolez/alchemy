@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Data Contract Generator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+
+    <div class="sidebar">
+      <div class="logo"><br><span>Data Contract Generator</span></div>
+      
+      <form id="uploadForm">
+        <label>Domain:</label>
+        <input type="text" name="domain" required />
+
+        <label>Schedule:</label>
+        <input type="text" name="schedule" required />
+
+        <label>Upload YAML File:</label>
+        <input type="file" name="yaml_file" accept=".yaml,.yml" required />
+
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <div class="main-content">
+      <div id="agentResponses"></div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
