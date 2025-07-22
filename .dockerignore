@@ -1,0 +1,33 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual env
+.venv/
+env/
+ENV/
+
+# IDE and editor settings
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Not needed files
+*.ipynb
+testing.*
+*.png
+*.yml
+*.yaml
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Optional: Exclude local contracts
+contracts/
