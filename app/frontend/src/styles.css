@@ -1,0 +1,93 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    display: flex;
+    height: 100vh;
+   
+  }
+  
+  .sidebar {
+    width: 25%;
+    padding: 20px;
+    border-right: 1px solid rgb(153, 27, 143);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    align-items: center;
+  }
+  
+  
+  .logo {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  input[type="text"], input[type="file"] {
+    padding: 8px;
+    font-size: 14px;
+  }
+  
+  button {
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .main-content {
+    width: 75%;
+    padding: 20px;
+    overflow-y: scroll;
+  }
+  
+  .agent-block {
+    border: 2px solid purple;
+    padding: 10px;
+    margin-bottom: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  
+  .agent-block textarea {
+    width: 100%;
+    height: 200px;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 10px;
+    resize: vertical;
+    border: none;
+    background-color: transparent;
+    outline: none;
+  }
+  
+
+  .agent-block .submit-agent {
+    align-self: flex-end;
+    padding: 6px 12px;
+    font-size: 14px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  .button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
