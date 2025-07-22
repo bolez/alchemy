@@ -22,6 +22,9 @@
 
 ```bash
 alchemy/
+├── app/
+│   ├── api/                   # Fast api's for web ui
+│   ├── frontend/              # Frontend assetes and files
 ├── llm/
 │   ├── agents/                # All LLM agents (data engineer, steward, governance, etc.)
 │   ├── config/                # API keys and model config
