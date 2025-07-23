@@ -25,6 +25,7 @@ alchemy/
 ├── app/
 │   ├── api/                   # Fast api's for web ui
 │   ├── frontend/              # Frontend assetes and files
+├── infra/                     # aws infra to deploy backend application
 ├── llm/
 │   ├── agents/                # All LLM agents (data engineer, steward, governance, etc.)
 │   ├── config/                # API keys and model config
@@ -41,6 +42,8 @@ alchemy/
 │       └── dbt_test_cases.sql      # Auto-generated dbt test cases
 ├── formatted_orders.yml       # Sample schema input
 ├── requirements.txt
+├── main.py
+├── Dockerfile
 └── README.md
 ```
 
@@ -147,3 +150,5 @@ contracts/ecommerce/
 ├── data_contract.md          # Human-readable Markdown summary
 └── dbt_test_cases.sql        # Generated test cases for dbt
 ```
+ # Apllication Url
+ https://rhwgcw25alowyya4kcs2tfq7jm0chriw.lambda-url.us-east-1.on.aws/

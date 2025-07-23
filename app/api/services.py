@@ -32,7 +32,7 @@ async def generate_contract_stream(domain, schedule, schema_path, session_id) ->
     graph = graph_builder.compile(checkpointer=memory)
 
     state = graph.invoke(initial_message, config=config)
-    active_sessions[session_id] = {"graph": graph, "state": state, "config": config}
+    active_sessions[session_id] = {"graph": graph, "state": state, "config": config, "domain": domain}
 
     while True:
 
@@ -45,6 +45,7 @@ async def generate_contract_stream(domain, schedule, schema_path, session_id) ->
                 "type": "agent",
                 "agent_name": current_agent,
                 "contract": contract,
+                "domain": domain,
                 "session_id": session_id
             }).encode() + b"\n"
             break
@@ -52,6 +53,7 @@ async def generate_contract_stream(domain, schedule, schema_path, session_id) ->
             final_contract = state.get("contract", {})
             yield json.dumps({
                 "type": "final",
+                "domain": domain,
                 "final_contract": final_contract
             }).encode() + b"\n"
             break
@@ -64,6 +66,7 @@ async def resume_graph(session_id: str, updated_contract: dict):
 
     graph = session["graph"]
     config = session["config"]
+    domain = session["domain"]
     cleaned_input = remove_watermark(updated_contract)
     new_state = graph.invoke(Command(resume=json.dumps(cleaned_input)), config=config)
     session["state"] = new_state
@@ -74,6 +77,7 @@ async def resume_graph(session_id: str, updated_contract: dict):
 
         return JSONResponse(content={
             "type": "agent",
+            "domain": domain,
             "agent_name": agent,
             "contract": contract,
             "session_id": session_id
@@ -82,5 +86,6 @@ async def resume_graph(session_id: str, updated_contract: dict):
         final_contract = new_state.get("contract", {})
         return JSONResponse(content={
             "type": "final",
+            "domain": domain,
             "final_contract": final_contract
         })
