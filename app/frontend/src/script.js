@@ -52,7 +52,7 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
   
               responseContainer.appendChild(agentDiv);
             } else if (data.type === "final") {
-              createDownloadBlock(data.final_contract);
+              createDownloadBlock(data.domain);
             }
           } catch (err) {
             console.error("Stream parsing error:", err, chunk);
@@ -114,7 +114,7 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
   
           responseContainer.appendChild(newAgentDiv);
         } else if (data.type === "final") {
-          createDownloadBlock(data.final_contract);
+          createDownloadBlock(data.domain);
         }
   
         btn.remove(); // hide the old submit button
@@ -125,5 +125,24 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
         btn.disabled = false;
         alert("Failed to submit. See console for details.");
       });
+  }
+  
+  function createDownloadBlock(domain) {
+    const responseContainer = document.getElementById('agentResponses');
+    const downloadDiv = document.createElement('div');
+    downloadDiv.className = "download-block";
+  
+    const baseUrl = `https://455986485846-datacontract-media.s3.amazonaws.com/contracts/${domain}`;
+  
+    downloadDiv.innerHTML = `
+      <div><strong>Download All Files</strong></div>
+      <ul>
+        <li><a href="${baseUrl}/dbt_test_cases.yml" download target="_blank">Download DBT test </a></li>
+        <li><a href="${baseUrl}/data_contract.md" download target="_blank">Download Markdown</a></li>
+        <li><a href="${baseUrl}/data_contract.yaml" download target="_blank">Download YAML</a></li>
+      </ul>
+    `;
+  
+    responseContainer.appendChild(downloadDiv);
   }
   

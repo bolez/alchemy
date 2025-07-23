@@ -4,7 +4,7 @@ import json
 import yaml
 import ast
 import os
-
+from llm.utils.s3 import S3Media
 
 def download_dbt_yaml(domain: str, tests_data: Dict[str, List[Dict[str, Any]]], file_path: str = "dbt_test_cases.yml") -> None:
     """
@@ -16,7 +16,7 @@ def download_dbt_yaml(domain: str, tests_data: Dict[str, List[Dict[str, Any]]], 
     """
 
     columns_dict = defaultdict(lambda: {"description": "", "tests": []})
-
+    s3_media = S3Media()
     for test in tests_data.get("tests", []):
 
         col_name = test["column_name"]
@@ -52,9 +52,13 @@ def download_dbt_yaml(domain: str, tests_data: Dict[str, List[Dict[str, Any]]], 
         "version": 2
 
     }
-    os.makedirs(f"contracts/{domain}", exist_ok=True)
-    file_path = f"contracts/{domain}/{file_path}"
-    with open(file_path, "w") as f:
-        yaml.dump(yaml_structure, f, sort_keys=False)
+    # os.makedirs(f"contracts/{domain}", exist_ok=True)
+    # file_path = f"contracts/{domain}/{file_path}"
+    # with open(file_path, "w") as f:
+    #     yaml.dump(yaml_structure, f, sort_keys=False)
+    # s3_media.upload_file(file_path)
+    # print(f"YAML file saved to {file_path}")
 
-    print(f"YAML file saved to {file_path}")
+    s3_key = f"contracts/{domain}/{file_path}"
+    s3_url = s3_media.upload_file(yaml_structure, s3_key)
+    return s3_url
